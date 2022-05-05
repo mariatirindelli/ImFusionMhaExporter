@@ -1,2 +1,3 @@
 .idea
 *.cpython-37.pyc
+/butta.py
