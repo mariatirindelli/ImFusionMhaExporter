@@ -117,5 +117,3 @@ class SaveTemporalMha(imfusion.Algorithm):
         sitk.WriteImage(sitk_image, self.output_filepath)
         print("Meta image Successfully saved in: ", self.output_filepath)
 
-
-imfusion.registerAlgorithm('Export Meta Sequence', SaveTemporalMha)

@@ -32,11 +32,26 @@ class WireEntry:
 def process_frame(frame, frame_id):
     n_total_wires = np.max(frame.flatten())
 
-    assert n_total_wires % 3 == 0, "Missing wired in the labeling"
-    n_nWires = n_total_wires // 3
+    # If not all wires are in the frame, append -1
+    frame_valid = True
+    for i in range(1, n_total_wires + 1):
+        if np.where( frame.flatten()== i).size == 0:
+            frame_valid = False
 
     wire_entries = []
+    if not frame_valid:
+        n_nWires = 3 # todo: change this not hard-coded
+        for n_wire in range(n_nWires):
+            for wire_in_nwire in [1, 2, 3]:
+                wire_entries.append(WireEntry(frame_id=frame_id,
+                                              n_wire_id=n_wire + 1,
+                                              wire_id=wire_in_nwire,
+                                              row=-1,
+                                              col=-1))
+        return wire_entries
 
+    assert n_total_wires % 3 == 0, "Missing wired in the labeling"
+    n_nWires = n_total_wires // 3
     for n_wire in range(n_nWires):
         for wire_in_nwire in [1, 2, 3]:
             wire_entries.append(WireEntry.get_from_frame(frame=frame,
@@ -53,7 +68,7 @@ def save_wire_entries_as_txt(wire_entries, txt_filepath):
         fid.write("#frameId,nWireId,wireId,row,col")
         for wire_entry in wire_entries:
             fid.write("\n")
-            wire_entry.write_on_file(fid)
+            wire_entry.write_on_file(fid, delimiter=" ")
 
 
 def main(input_image_path, output_txt_path):
@@ -71,11 +86,9 @@ def main(input_image_path, output_txt_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--image_path', type=str,
-                        default="C:/Users/maria/OneDrive/Desktop/wire-phantom-calibration/US-Calibration-Data/"
-                                "DataRecordings/SegmentedSweeps/SweepLabels0.mha")
+                        default="/home/maria/Desktop/WirePhantomCalibrationProject/ProcessingPipeline/SegmentedSweeps/wirePhantomSweepsLabels2.mha")
     parser.add_argument('--output_txt_path', type=str,
-                        default="C:/Users/maria/OneDrive/Desktop/wire-phantom-calibration/US-Calibration-Data/"
-                                "DataRecordings/SegmentedSweeps/SweepFiducials0.txt")
+                        default="/home/maria/Desktop/WirePhantomCalibrationProject/ProcessingPipeline/SegmentedSweeps/wirePhantomFiducials2.txt")
 
     args = parser.parse_args()
     main(input_image_path=args.image_path,

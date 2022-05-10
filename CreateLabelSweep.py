@@ -2,6 +2,7 @@ import imfusion
 import numpy as np
 import os
 
+
 class CreateLabelSweep(imfusion.Algorithm):
     def __init__(self, tracked_stream, untracked_stream):
         super().__init__()
@@ -38,5 +39,3 @@ class CreateLabelSweep(imfusion.Algorithm):
 
         return
 
-
-imfusion.registerAlgorithm('Create Label Sweep', CreateLabelSweep)
